@@ -1,0 +1,26 @@
+# Virtual Environment
+wake_env/
+
+# Data and Models
+dataset_raw/
+dataset/
+models/*.pt
+models/*.torchscript.pt
+!models/zerotwo_v1.onnx
+
+# Tools and External Binaries
+tools/
+test_piper_ok.wav
+test_out.wav
+test_piper_output.wav
+test_ok.wav
+
+# Python logs and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
