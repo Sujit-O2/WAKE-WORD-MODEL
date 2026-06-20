@@ -25,28 +25,28 @@ print("=" * 55)
 print("  PIPER REINSTALL (proper directory structure)")
 print("=" * 55)
 
-# ── Backup voice models (they're fine) ───────────────
+# -- Backup voice models (they're fine) ---------------
 print("\n[1] Backing up voice models...")
 voice_backup = TOOLS_DIR / "voices_backup"
 if VOICES_DIR.exists() and not voice_backup.exists():
     shutil.copytree(VOICES_DIR, voice_backup)
     print(f"  Backed up to: voices_backup/")
 
-# ── Remove old broken piper dir ───────────────────────
+# -- Remove old broken piper dir -----------------------
 print("\n[2] Removing old piper installation...")
 if PIPER_DIR.exists():
     shutil.rmtree(PIPER_DIR)
     print("  Removed tools/piper/")
 PIPER_DIR.mkdir(parents=True, exist_ok=True)
 
-# ── Download fresh zip ────────────────────────────────
+# -- Download fresh zip --------------------------------
 zip_path = TOOLS_DIR / "piper_windows.zip"
 print(f"\n[3] Downloading piper (~30MB)...")
 print(f"  URL: {URL}")
 urllib.request.urlretrieve(URL, zip_path)
 print(f"  Downloaded: {zip_path.stat().st_size / 1024 / 1024:.1f} MB")
 
-# ── Extract maintaining directory structure ────────────
+# -- Extract maintaining directory structure ------------
 print("\n[4] Extracting with proper directory structure...")
 with zipfile.ZipFile(zip_path, "r") as zf:
     members = zf.infolist()
@@ -68,14 +68,14 @@ with zipfile.ZipFile(zip_path, "r") as zf:
 zip_path.unlink()
 print("  Extraction complete!")
 
-# ── Show structure ─────────────────────────────────────
+# -- Show structure -------------------------------------
 espeak_items = list(ESPEAK_DIR.rglob("*")) if ESPEAK_DIR.exists() else []
 print(f"\n  espeak-ng-data: {'EXISTS' if ESPEAK_DIR.exists() else 'MISSING'}")
 print(f"  espeak-ng-data items: {len(espeak_items)}")
 subdirs = [d.name for d in ESPEAK_DIR.iterdir() if d.is_dir()] if ESPEAK_DIR.exists() else []
 print(f"  Subdirs: {subdirs}")
 
-# ── Restore voice models ───────────────────────────────
+# -- Restore voice models -------------------------------
 print("\n[5] Restoring voice models...")
 if voice_backup.exists():
     if VOICES_DIR.exists():
@@ -84,11 +84,11 @@ if voice_backup.exists():
     shutil.rmtree(voice_backup)
     print(f"  Voices restored: {len(list(VOICES_DIR.glob('*.onnx')))} models")
 
-# ── Test piper ─────────────────────────────────────────
+# -- Test piper -----------------------------------------
 print("\n[6] Testing piper...")
 voice_onnx = VOICES_DIR / "en_US-lessac-medium.onnx"
 if not voice_onnx.exists():
-    print(f"  ⚠  Voice not found: {voice_onnx.name}")
+    print(f"  [!]  Voice not found: {voice_onnx.name}")
 else:
     with tempfile.TemporaryDirectory() as tmpdir:
         result = subprocess.run(
@@ -101,10 +101,10 @@ else:
         wavs = list(Path(tmpdir).glob("*.wav"))
         if wavs and wavs[0].stat().st_size > 500:
             shutil.copy2(wavs[0], PROJECT_DIR / "test_piper_ok.wav")
-            print(f"  ✅ PIPER WORKS! {wavs[0].stat().st_size:,} bytes")
+            print(f"  [OK] PIPER WORKS! {wavs[0].stat().st_size:,} bytes")
             print(f"     Saved: test_piper_ok.wav")
         else:
-            print(f"  ✗ Still failing (rc={result.returncode})")
+            print(f"  [X] Still failing (rc={result.returncode})")
             print(f"  stderr: {result.stderr.decode(errors='replace')[:300]}")
 
 print("\n" + "=" * 55)

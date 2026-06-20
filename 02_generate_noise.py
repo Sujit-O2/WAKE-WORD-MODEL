@@ -2,7 +2,7 @@
 02_generate_noise.py
 ====================
 Generates 1500 background / ambient noise files using numpy.
-100% offline — no downloads needed.
+100% offline -- no downloads needed.
 
 Noise types:
   - White noise
@@ -26,17 +26,17 @@ import soundfile as sf
 from pathlib import Path
 from tqdm import tqdm
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 PROJECT_DIR = Path(__file__).parent
 OUTPUT_DIR  = PROJECT_DIR / "dataset_raw" / "background"
 TARGET      = 1500          # files to generate
 SAMPLE_RATE = 16000         # Hz
 MIN_DUR_SEC = 1.0           # minimum clip duration
 MAX_DUR_SEC = 3.0           # maximum clip duration
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 
 
-# ── Noise generators ──────────────────────────────────────────────
+# -- Noise generators ----------------------------------------------
 
 def white_noise(n: int, amp: float = 0.05) -> np.ndarray:
     return (np.random.randn(n) * amp).astype(np.float32)
@@ -137,12 +137,12 @@ def keyboard_clicks(n: int, sr: int, amp: float = 0.04) -> np.ndarray:
 
 
 def near_silence(n: int, amp: float = 0.002) -> np.ndarray:
-    """Very quiet background hiss — simulates 'silence' with noise floor."""
+    """Very quiet background hiss -- simulates 'silence' with noise floor."""
     return white_noise(n, amp=amp)
 
 
 def mixed(n: int, sr: int, amp: float = 0.05) -> np.ndarray:
-    """Combine 2–3 noise types at random weights."""
+    """Combine 2-3 noise types at random weights."""
     sources = [
         white_noise(n) * random.uniform(0.3, 0.7),
         pink_noise(n)  * random.uniform(0.3, 0.7),
@@ -154,7 +154,7 @@ def mixed(n: int, sr: int, amp: float = 0.05) -> np.ndarray:
     return (mix * amp).astype(np.float32)
 
 
-# ── Registry ──────────────────────────────────────────────────────
+# -- Registry ------------------------------------------------------
 GENERATORS = {
     "white":     lambda n, sr: white_noise(n,     amp=random.uniform(0.02, 0.08)),
     "pink":      lambda n, sr: pink_noise(n,      amp=random.uniform(0.02, 0.07)),
@@ -234,8 +234,8 @@ def main():
             pbar.set_postfix(err=str(e)[:30])
 
     print("\n" + "=" * 60)
-    print(f"  ✓ Generated: {total_ok} noise files")
-    print(f"  ✗ Errors:    {total_err}")
+    print(f"  [OK] Generated: {total_ok} noise files")
+    print(f"  [X] Errors:    {total_err}")
     print(f"  📁 Saved to: {OUTPUT_DIR}")
     print("=" * 60)
 

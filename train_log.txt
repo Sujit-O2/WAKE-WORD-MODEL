@@ -1,0 +1,48 @@
+[INFO] Device: cpu
+============================================================
+  ZEROTWO TRAINER (ResNet-SE, 3-ch, model.py)
+  Device:cpu | Epochs:80 | Batch:32
+============================================================
+
+[1] Loading data...
+
+  Dataset: 7500 pos + 2938 neg = 10438 total
+  Train:8873 | Val:1565
+  Loaded 600 noise files for online mixing
+
+[2] Building model...
+  Params: 2,812,578
+
+[3] Training (80 epochs, 5 warmup)...
+  * Ep 1/80 lr=6.00e-04 trL=0.0220 trA=0.767 vlL=0.0067 vlA=0.946 f1=0.962 p=0.995 r=0.931
+    Ep 2/80 lr=1.20e-03 trL=0.0174 trA=0.844 vlL=0.0104 vlA=0.854 f1=0.886 p=0.999 r=0.796
+  * Ep 3/80 lr=1.80e-03 trL=0.0170 trA=0.844 vlL=0.0084 vlA=0.972 f1=0.980 p=0.996 r=0.964
+    Ep 4/80 lr=2.40e-03 trL=0.0176 trA=0.852 vlL=0.0087 vlA=0.918 f1=0.938 p=0.998 r=0.885
+  * Ep 5/80 lr=3.00e-03 trL=0.0164 trA=0.855 vlL=0.0055 vlA=0.995 f1=0.996 p=0.994 r=0.998
+    Ep 6/80 lr=2.93e-03 trL=0.0153 trA=0.867 vlL=0.0042 vlA=0.981 f1=0.987 p=0.995 r=0.979
+    Ep 7/80 lr=2.71e-03 trL=0.0142 trA=0.876 vlL=0.0089 vlA=0.884 f1=0.913 p=0.999 r=0.840
+    Ep 8/80 lr=2.38e-03 trL=0.0134 trA=0.882 vlL=0.0059 vlA=0.960 f1=0.972 p=0.998 r=0.947
+    Ep 9/80 lr=1.96e-03 trL=0.0131 trA=0.878 vlL=0.0064 vlA=0.984 f1=0.989 p=0.995 r=0.982
+    Ep10/80 lr=1.50e-03 trL=0.0130 trA=0.880 vlL=0.0144 vlA=0.725 f1=0.762 p=1.000 r=0.616
+  * Ep11/80 lr=1.04e-03 trL=0.0124 trA=0.887 vlL=0.0046 vlA=0.995 f1=0.996 p=0.996 r=0.997
+    Ep12/80 lr=6.19e-04 trL=0.0123 trA=0.864 vlL=0.0042 vlA=0.976 f1=0.983 p=0.998 r=0.969
+    Ep13/80 lr=2.87e-04 trL=0.0105 trA=0.893 vlL=0.0041 vlA=0.971 f1=0.980 p=0.999 r=0.961
+    Ep14/80 lr=7.44e-05 trL=0.0096 trA=0.901 vlL=0.0035 vlA=0.985 f1=0.989 p=0.999 r=0.980
+    Ep15/80 lr=3.00e-03 trL=0.0156 trA=0.868 vlL=0.0048 vlA=0.965 f1=0.975 p=0.999 r=0.952
+    Ep16/80 lr=2.98e-03 trL=0.0127 trA=0.886 vlL=0.0056 vlA=0.950 f1=0.964 p=0.999 r=0.931
+    Ep17/80 lr=2.93e-03 trL=0.0143 trA=0.884 vlL=0.0045 vlA=0.988 f1=0.992 p=0.996 r=0.987
+    Ep18/80 lr=2.84e-03 trL=0.0133 trA=0.860 vlL=0.0065 vlA=0.919 f1=0.940 p=0.998 r=0.888
+    Ep19/80 lr=2.71e-03 trL=0.0131 trA=0.879 vlL=0.0059 vlA=0.945 f1=0.960 p=0.999 r=0.924
+    Ep20/80 lr=2.56e-03 trL=0.0126 trA=0.872 vlL=0.0042 vlA=0.977 f1=0.984 p=0.994 r=0.975
+    Ep21/80 lr=2.38e-03 trL=0.0115 trA=0.893 vlL=0.0059 vlA=0.957 f1=0.969 p=0.999 r=0.941
+    Ep22/80 lr=2.18e-03 trL=0.0125 trA=0.863 vlL=0.0053 vlA=0.962 f1=0.973 p=1.000 r=0.948
+    Ep23/80 lr=1.96e-03 trL=0.0124 trA=0.860 vlL=0.0042 vlA=0.990 f1=0.993 p=0.996 r=0.989
+    Ep24/80 lr=1.74e-03 trL=0.0108 trA=0.892 vlL=0.0046 vlA=0.981 f1=0.987 p=0.996 r=0.978
+    Ep25/80 lr=1.50e-03 trL=0.0103 trA=0.887 vlL=0.0055 vlA=0.958 f1=0.970 p=0.999 r=0.943
+    Ep26/80 lr=1.27e-03 trL=0.0092 trA=0.887 vlL=0.0073 vlA=0.932 f1=0.950 p=1.000 r=0.905
+
+  Early stop at epoch 26
+
+[4] Exporting ONNX...
+[torch.onnx] Obtain model graph for `WakeWordResNetSE([...]` with `torch.export.export(..., strict=False)`...
+[torch.onnx] 

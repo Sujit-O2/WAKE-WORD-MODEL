@@ -1,6 +1,6 @@
 """
-08_realtime.py
-==============
+08_realtime.py (v2)
+===================
 Real-time wake word detection using the trained ONNX model.
 
 Usage:
@@ -38,7 +38,7 @@ except ImportError:
     os.system(f"{sys.executable} -m pip install librosa -q")
     import librosa
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 PROJECT_DIR  = Path(__file__).parent
 SAMPLE_RATE  = 16000
 N_MELS       = 80
@@ -46,15 +46,15 @@ HOP_LENGTH   = 160
 WIN_LENGTH   = 400
 N_FFT        = 512
 WINDOW_SEC   = 1.0     # 1 second sliding window
-N_FRAMES     = 96       # Must match exported ONNX model (80x96 input)
+N_FRAMES     = 100     # Must match exported ONNX model (1 sec at 16kHz, hop=160)
 
 # Sliding window buffer
 BUFFER_SAMPLES = int(WINDOW_SEC * SAMPLE_RATE)
 STEP_SAMPLES   = BUFFER_SAMPLES // 2   # 50% overlap
 
-CONFIRMATION_FRAMES = 3     # Require 3 consecutive detections
-COOLDOWN_SEC        = 1.5   # Ignore triggers for 1.5s after detection
-# ─────────────────────────────────────────────────────────────────
+CONFIRMATION_FRAMES = 5     # Require 5 consecutive detections (near-zero false triggers)
+COOLDOWN_SEC        = 2.0   # Ignore triggers for 2s after detection
+# -----------------------------------------------------------------
 
 
 def extract_melspec(audio: np.ndarray) -> np.ndarray:
@@ -66,7 +66,7 @@ def extract_melspec(audio: np.ndarray) -> np.ndarray:
     mel_db = librosa.power_to_db(mel + 1e-9, ref=np.max)
     mel_db = (mel_db - mel_db.mean()) / (mel_db.std() + 1e-9)
     mel_db = mel_db[:, :N_FRAMES]
-    return mel_db.astype(np.float32)[np.newaxis, np.newaxis, ...]  # (1,1,80,N_FRAMES)
+    return mel_db.astype(np.float32)[np.newaxis, np.newaxis, ...]  # (1,1,80,100)
 
 
 def softmax(x: np.ndarray) -> np.ndarray:
@@ -76,18 +76,23 @@ def softmax(x: np.ndarray) -> np.ndarray:
 
 def main():
     parser = argparse.ArgumentParser(description="Zerotwo Wake Word Real-Time Detector")
-    parser.add_argument("--model", default="models/zerotwo_v1.onnx", help="ONNX model path")
-    parser.add_argument("--threshold", type=float, default=0.80, help="Detection threshold")
+    parser.add_argument("--model", default="models/zerotwo_v2.onnx", help="ONNX model path")
+    parser.add_argument("--threshold", type=float, default=0.90, help="Detection threshold (0.90 = near-zero false triggers)")
     args = parser.parse_args()
 
     model_path = PROJECT_DIR / args.model
+
+    # Fallback to v1 if v2 doesn't exist
+    if not model_path.exists() and "v2" in str(model_path):
+        model_path = PROJECT_DIR / "models" / "zerotwo_v1.onnx"
+
     if not model_path.exists():
-        print(f"⚠  Model not found: {model_path}")
+        print(f"[!]  Model not found: {model_path}")
         print("   Run 06_train.py first to train the model.")
         sys.exit(1)
 
     print("=" * 55)
-    print("  🎤 ZEROTWO WAKE WORD DETECTOR")
+    print("  🎤 ZEROTWO WAKE WORD DETECTOR (v2)")
     print(f"  Model:     {model_path.name}")
     print(f"  Threshold: {args.threshold}")
     print(f"  Confirm:   {CONFIRMATION_FRAMES} consecutive frames")
@@ -96,7 +101,7 @@ def main():
     sess = ort.InferenceSession(str(model_path))
     input_name  = sess.get_inputs()[0].name
     output_name = sess.get_outputs()[0].name
-    print("  ✓ Model loaded")
+    print(f"  [OK] Model loaded (input: {sess.get_inputs()[0].shape})")
 
     # Ring buffer for audio
     audio_buffer  = np.zeros(BUFFER_SAMPLES, dtype=np.float32)

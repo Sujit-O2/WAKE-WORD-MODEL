@@ -24,7 +24,7 @@ SAMPLE_RATE    = 16000
 
 
 def find_ffmpeg():
-    """Find ffmpeg — tries imageio-ffmpeg bundle first, then system PATH."""
+    """Find ffmpeg -- tries imageio-ffmpeg bundle first, then system PATH."""
     # 1. imageio-ffmpeg bundled binary (most reliable in venv)
     try:
         from imageio_ffmpeg import get_ffmpeg_exe
@@ -105,22 +105,22 @@ def main():
     print(f"\n  Found {len(m4a_files)} M4A recordings")
 
     if not m4a_files:
-        print("  ✗ No M4A files found!")
+        print("  [X] No M4A files found!")
         sys.exit(1)
 
     # Find converter
     ffmpeg = find_ffmpeg()
     if ffmpeg:
-        print(f"  ✓ Using ffmpeg: {ffmpeg}")
+        print(f"  [OK] Using ffmpeg: {ffmpeg}")
         converter = "ffmpeg"
     else:
-        print("  ⚠ ffmpeg not found — using librosa fallback")
+        print("  [!] ffmpeg not found -- using librosa fallback")
         converter = "librosa"
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     ok_count = fail_count = 0
 
-    pbar = tqdm(m4a_files, desc="Converting M4A→WAV", unit="file")
+    pbar = tqdm(m4a_files, desc="Converting M4A->WAV", unit="file")
     for m4a_path in pbar:
         # Clean filename
         stem = m4a_path.stem.replace(" ", "_").replace("(", "").replace(")", "")
@@ -143,10 +143,10 @@ def main():
         pbar.set_postfix(ok=ok_count, fail=fail_count)
 
     print("\n" + "=" * 60)
-    print(f"  ✓ Converted: {ok_count} recordings")
-    print(f"  ✗ Failed:    {fail_count}")
+    print(f"  [OK] Converted: {ok_count} recordings")
+    print(f"  [X] Failed:    {fail_count}")
     print(f"  📁 Saved to: {OUTPUT_DIR}")
-    print("  → Will be augmented 10x in 05_augment.py")
+    print("  -> Will be augmented 10x in 05_augment.py")
     print("=" * 60)
 
 if __name__ == "__main__":

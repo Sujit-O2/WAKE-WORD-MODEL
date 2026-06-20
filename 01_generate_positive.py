@@ -35,7 +35,7 @@ PIPER_RELEASE_URL = (
 
 HF_BASE = "https://huggingface.co/rhasspy/piper-voices/resolve/main"
 
-# ── 6 voices for maximum diversity ────────────────────────────────
+# -- 6 voices for maximum diversity --------------------------------
 VOICES = {
     # US English
     "lessac":  {"onnx": f"{HF_BASE}/en/en_US/lessac/medium/en_US-lessac-medium.onnx",
@@ -71,21 +71,21 @@ SPEED_VARIANTS = [0.80, 0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15, 1.20]
 def download_file(url, dest, desc=""):
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists() and dest.stat().st_size > 1000:
-        print(f"  ✓ Already exists: {dest.name}")
+        print(f"  [OK] Already exists: {dest.name}")
         return True
-    print(f"  ↓ Downloading {desc or dest.name} ...")
+    print(f"  [DL] Downloading {desc or dest.name} ...")
     try:
         urllib.request.urlretrieve(url, dest)
-        print(f"  ✓ Saved: {dest.name}")
+        print(f"  [OK] Saved: {dest.name}")
         return True
     except Exception as e:
-        print(f"  ✗ FAILED: {e}")
+        print(f"  [FAIL] {e}")
         return False
 
 
 def setup_piper():
     if PIPER_EXE.exists():
-        print("✓ Piper already installed.")
+        print("[OK] Piper already installed.")
         return
     print("\n[SETUP] Downloading Piper TTS...")
     zip_path = PROJECT_DIR / "tools" / "piper_windows.zip"
@@ -100,7 +100,7 @@ def setup_piper():
             with zf.open(member) as src, open(target, "wb") as dst:
                 shutil.copyfileobj(src, dst)
     zip_path.unlink()
-    print(f"  ✓ Piper ready at: {PIPER_DIR}")
+    print(f"  [OK] Piper ready at: {PIPER_DIR}")
 
 
 def setup_voices():
@@ -118,7 +118,7 @@ def setup_voices():
         if ok_onnx and ok_json:
             available.append((voice_name, onnx_dest))
         else:
-            print(f"  ⚠ Skipping {voice_name} (download failed)")
+            print(f"  [!] Skipping {voice_name} (download failed)")
     return available
 
 
@@ -164,7 +164,7 @@ def main():
     available_voices = setup_voices()
 
     if not available_voices:
-        print("✗ No voices available — check internet connection.")
+        print("[X] No voices available -- check internet connection.")
         sys.exit(1)
 
     print(f"\n  Available voices: {[v[0] for v in available_voices]}")
@@ -178,7 +178,7 @@ def main():
 
     for v_idx, (voice_name, voice_onnx) in enumerate(available_voices):
         n_samples = per_voice + (1 if v_idx < remainder else 0)
-        print(f"\n[VOICE: {voice_name}] → {n_samples} samples")
+        print(f"\n[VOICE: {voice_name}] -> {n_samples} samples")
         pbar = tqdm(range(n_samples), desc=f"  {voice_name}", unit="file")
         for _ in pbar:
             text  = random.choice(ZEROTWO_VARIANTS)
@@ -198,8 +198,8 @@ def main():
             pbar.set_postfix(ok=total_ok, fail=total_fail)
 
     print("\n" + "=" * 60)
-    print(f"  ✓ Generated: {total_ok} positive samples")
-    print(f"  ✗ Failed:    {total_fail}")
+    print(f"  [OK] Generated: {total_ok} positive samples")
+    print(f"  [X] Failed:    {total_fail}")
     print(f"  📁 Output:   {OUTPUT_DIR}")
     print("=" * 60)
 

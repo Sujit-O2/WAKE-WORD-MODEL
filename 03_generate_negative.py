@@ -2,7 +2,7 @@
 03_generate_negative.py
 =======================
 Generates 1500 negative speech samples using Piper TTS.
-These are speech clips of words/phrases that are NOT "Zerotwo" —
+These are speech clips of words/phrases that are NOT "Zerotwo" --
 including hard negatives (phonetically similar) and diverse speech.
 
 Requires: Piper TTS (downloaded by 01_generate_positive.py)
@@ -19,16 +19,16 @@ import tempfile
 from pathlib import Path
 from tqdm import tqdm
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 PROJECT_DIR = Path(__file__).parent
 PIPER_EXE   = PROJECT_DIR / "tools" / "piper" / "piper.exe"
 VOICES_DIR  = PROJECT_DIR / "tools" / "voices"
 ESPEAK_DIR  = PROJECT_DIR / "tools" / "piper" / "espeak-ng-data"
 OUTPUT_DIR  = PROJECT_DIR / "dataset_raw" / "negative"
-TARGET      = 1500
-# ─────────────────────────────────────────────────────────────────
+TARGET      = 2000
+# -----------------------------------------------------------------
 
-# ── HARD NEGATIVES (phonetically similar — most important!) ───────
+# -- HARD NEGATIVES (phonetically similar -- most important!) -------
 HARD_NEGATIVES = [
     # Direct confusables
     "zero", "two", "hero", "zero to", "zero too",
@@ -45,9 +45,18 @@ HARD_NEGATIVES = [
     # Rhymes with "two"
     "true", "blue", "clue", "glue", "shoe", "who",
     "through", "threw", "brew", "dew", "few", "new",
+    # ADVERSARIAL: partial wake word + filler (strongest false trigger traps)
+    "hey zero", "ok two", "listen two", "yo two",
+    "zero and two", "zero two one", "zero two go",
+    "set zero two", "call zero two", "open zero two",
+    "zero to two", "near zero", "close to zero",
+    "hero two", "nero two", "dero two",
+    "let's go two", "go to two", "what two",
+    "there are two", "only two", "just two",
+    "we need two", "give me two", "number two",
 ]
 
-# ── RANDOM SPEECH (diverse sentences to prevent false triggers) ───
+# -- RANDOM SPEECH (diverse sentences to prevent false triggers) ---
 RANDOM_SPEECH = [
     # Everyday commands
     "turn off the lights", "play some music", "set a timer",
@@ -117,7 +126,7 @@ RANDOM_SPEECH = [
     "strong winds expected throughout the afternoon",
 ]
 
-# ── Speed variations ──────────────────────────────────────────────
+# -- Speed variations ----------------------------------------------
 SPEED_VARIANTS = [0.80, 0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15, 1.20]
 
 ALL_PHRASES = HARD_NEGATIVES + RANDOM_SPEECH
@@ -168,13 +177,13 @@ def main():
     print("=" * 60)
 
     if not PIPER_EXE.exists():
-        print(f"\n⚠  Piper not found at {PIPER_EXE}")
+        print(f"\n[!]  Piper not found at {PIPER_EXE}")
         print("   Please run 01_generate_positive.py first to download Piper.")
         sys.exit(1)
 
     voices = get_available_voices()
     if not voices:
-        print(f"\n⚠  No voice models found in {VOICES_DIR}")
+        print(f"\n[!]  No voice models found in {VOICES_DIR}")
         print("   Please run 01_generate_positive.py first to download voices.")
         sys.exit(1)
 
@@ -188,7 +197,7 @@ def main():
     # Build generation plan: (phrase, voice, speed)
     plan = []
 
-    # Hard negatives — cycle through them
+    # Hard negatives -- cycle through them
     for i in range(n_hard):
         phrase = HARD_NEGATIVES[i % len(HARD_NEGATIVES)]
         voice  = random.choice(voices)
@@ -224,10 +233,10 @@ def main():
         pbar.set_postfix(ok=total_ok, fail=total_fail, cat=category[:4])
 
     print("\n" + "=" * 60)
-    print(f"  ✓ Generated: {total_ok} negative samples")
+    print(f"  [OK] Generated: {total_ok} negative samples")
     print(f"    Hard negatives:  ~{n_hard}")
     print(f"    Random speech:   ~{n_random}")
-    print(f"  ✗ Failed:    {total_fail}")
+    print(f"  [X] Failed:    {total_fail}")
     print(f"  📁 Saved to: {OUTPUT_DIR}")
     print("=" * 60)
 

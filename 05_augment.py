@@ -29,15 +29,15 @@ except ImportError:
         Shift, Gain, AddGaussianSNR
     )
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 PROJECT_DIR  = Path(__file__).parent
 REAL_DIR     = PROJECT_DIR / "dataset_raw"  / "real_positive"
 OUTPUT_DIR   = PROJECT_DIR / "dataset" / "positive"
 SAMPLE_RATE  = 16000
 AUGMENT_FACTOR = 10   # Generate 10 variants per real recording
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 
-# ── Augmentation pipelines (applied randomly) ────────────────────
+# -- Augmentation pipelines (applied randomly) --------------------
 
 LIGHT_AUG = Compose([
     AddGaussianSNR(min_snr_db=15, max_snr_db=30, p=0.5),
@@ -88,7 +88,7 @@ def main():
 
     real_files = sorted(REAL_DIR.glob("*.wav"))
     if not real_files:
-        print(f"\n⚠  No real WAV files found in {REAL_DIR}")
+        print(f"\n[!]  No real WAV files found in {REAL_DIR}")
         print("   Run 00_process_real.py first.")
         return
 
@@ -105,7 +105,7 @@ def main():
         try:
             audio, _ = librosa.load(str(src_path), sr=SAMPLE_RATE, mono=True)
         except Exception as e:
-            print(f"  ✗ Cannot load {src_path.name}: {e}")
+            print(f"  [X] Cannot load {src_path.name}: {e}")
             continue
 
         # Generate AUGMENT_FACTOR variants
@@ -132,8 +132,8 @@ def main():
             ok_count += 1
 
     print("\n" + "=" * 60)
-    print(f"  ✓ Augmented: {ok_count} files total")
-    print(f"  ✗ Failed:    {fail_count}")
+    print(f"  [OK] Augmented: {ok_count} files total")
+    print(f"  [X] Failed:    {fail_count}")
     print(f"  📁 Saved to: {OUTPUT_DIR}")
     print("=" * 60)
 

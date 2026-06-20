@@ -1,0 +1,33 @@
+# requirements.txt
+# =================
+# Install everything at once:
+#   pip install -r requirements.txt
+#
+# For GPU training (CUDA 12.1):
+#   pip install -r requirements.txt torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+#
+# For CPU-only training:
+#   pip install -r requirements.txt torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# --- Core ML ---
+numpy>=1.24
+scipy>=1.10
+tqdm
+
+# --- Audio processing ---
+librosa>=0.10
+soundfile
+
+# --- PyTorch (CPU default, override with index-url for GPU) ---
+torch
+torchaudio
+
+# --- ONNX export + inference ---
+onnxruntime>=1.16
+onnxscript
+
+# --- Real-time mic input ---
+sounddevice
+
+# --- Augmentation (optional, for 05_augment.py) ---
+# audiomentations  # uncomment if you have MSVC build tools

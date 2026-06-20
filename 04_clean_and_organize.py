@@ -5,15 +5,15 @@ Cleans, validates, and organizes all generated audio into the final
 training dataset structure.
 
 Input dirs:
-  dataset_raw/positive/       ← TTS generated
-  dataset_raw/real_positive/  ← Your real recordings
-  dataset_raw/negative/       ← Negative speech
-  dataset_raw/background/     ← Noise files
+  dataset_raw/positive/       <- TTS generated
+  dataset_raw/real_positive/  <- Your real recordings
+  dataset_raw/negative/       <- Negative speech
+  dataset_raw/background/     <- Noise files
 
 Output dirs:
-  dataset/positive/   ← All positive samples
-  dataset/negative/   ← All negative speech
-  dataset/background/ ← All background noise
+  dataset/positive/   <- All positive samples
+  dataset/negative/   <- All negative speech
+  dataset/background/ <- All background noise
 """
 
 import sys
@@ -24,14 +24,14 @@ import librosa
 from pathlib import Path
 from tqdm import tqdm
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 PROJECT_DIR  = Path(__file__).parent
 RAW_DIR      = PROJECT_DIR / "dataset_raw"
 DATASET_DIR  = PROJECT_DIR / "dataset"
 SAMPLE_RATE  = 16000
 MIN_DUR_SEC  = 0.3   # minimum duration in seconds
 MAX_DUR_SEC  = 5.0   # maximum duration in seconds
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 
 CATEGORY_MAP = {
     "positive": [
@@ -92,7 +92,7 @@ def process_category(category: str, src_dirs: list, global_idx: dict):
             all_files.extend(sorted(src_dir.glob("*.wav")))
 
     if not all_files:
-        print(f"  ⚠ No files found for category '{category}'")
+        print(f"  [!] No files found for category '{category}'")
         return 0, 0
 
     ok_count   = 0
@@ -146,7 +146,7 @@ def main():
     print(f"  {'TOTAL':12s}: {total_files:5d} files")
     print(f"\n  📁 Dataset at: {DATASET_DIR}")
     print("=" * 60)
-    print("\n  ✅ Ready to augment + train!")
+    print("\n  [OK] Ready to augment + train!")
 
 
 if __name__ == "__main__":
